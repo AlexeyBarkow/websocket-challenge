@@ -2,66 +2,7 @@
 <html>
 	<head>
 		<title>WebSockets</title>
-		<script>
-			window.addEventListener("load", function() {
-				var token = token;
-
-				var task2 = {};
-
-				var socket = new WebSocket("ws://localhost:8080");
-				socket.binaryType = "arraybuffer";
-				socket.onopen = function() {
-					socket.send(JSON.stringify({ msg: "challenge_accepted", name: "DaQuirm" }));
-				};
-
-				socket.onmessage = function(evt) {
-					if (typeof evt.data == "string") {
-						var msg = JSON.parse(evt.data);
-						switch (msg.msg) {
-							case "auth":
-								token = msg.auth_token;
-								socket.send(JSON.stringify({ msg: "task_one", auth_token: token }));
-								break;
-							 case "compute":
-							    var result;
-							    switch (msg.operator) {
-							        case '+':
-							            result = msg.operands[0] + msg.operands[1];
-							            break;
-							        case '-':
-							            result = msg.operands[0] - msg.operands[1];
-							            break;
-							        case '*':
-							            result = msg.operands[0] * msg.operands[1];
-							            break;
-							    }
-								socket.send(JSON.stringify({ msg: "task_one_result", auth_token: token, result: result }));
-							 	break;
-							case "win":
-								socket.send(JSON.stringify({ msg: "next", auth_token: token }));
-								break;
-
-							case "binary_sum":
-								task2 = msg;
-								break;
-						}
-					} else {
-					    var result;
-					    var arrs = {
-					        8: Uint8Array,
-					        16: Uint16Array,
-					    }
-					    var arr = new arrs[task2.bits](evt.data);
-					    var sum = 0;
-					    for (var i = 0; i < arr.length; i++) {
-					        sum += arr[i];
-					    }
-					    result = sum;
-					    socket.send(JSON.stringify({ msg: "task_two_result", auth_token: token, result: result }));
-					}
-				}
-			});
-		</script>
+		<script src="./solution.js"></script>
 	</head>
 	<body>
 
